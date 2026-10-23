@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://deepaspects360.github.io/thoranam/demo-religious-function/sitemap.xml

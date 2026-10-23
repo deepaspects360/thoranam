@@ -1,0 +1,145 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex,nofollow">
+<title>Invite generator: [Demo] Religious Function</title>
+<style>
+:root{--ink:#231a1f;--muted:#6f6368;--maroon:#7a1f3d;--maroon-d:#5e1530;--gold:#f2a33a;--line:#e7dfd6;--bg:#fbf7f1;--card:#fff}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font:15px/1.5 system-ui,"Segoe UI","Noto Sans","Noto Sans Tamil",sans-serif}
+header{background:linear-gradient(135deg,#3f0d20,#7a1f3d);color:#fdefd6;padding:28px 20px}
+header div{max-width:980px;margin:0 auto}
+h1{margin:0;font:600 26px/1.2 Georgia,"Playfair Display",serif;color:#f8cd7e}
+header p{margin:6px 0 0;opacity:.85}
+main{max-width:980px;margin:0 auto;padding:20px;display:grid;gap:18px}
+.card{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:18px;box-shadow:0 8px 24px -18px rgba(63,13,32,.4)}
+.card h2{margin:0 0 10px;font-size:16px}
+label{display:block;font-weight:600;font-size:13px;margin:12px 0 4px}
+input[type=text],textarea{width:100%;border:1px solid #d6cdc4;border-radius:10px;padding:10px 12px;font:inherit;background:#fff;color:var(--ink);transition:border-color .15s,box-shadow .15s}
+input:focus,textarea:focus{outline:none;border-color:var(--maroon);box-shadow:0 0 0 3px rgba(179,58,98,.15)}
+textarea{min-height:130px;resize:vertical}
+.hint{color:var(--muted);font-size:12.5px;margin-top:4px}
+.chips{display:flex;flex-wrap:wrap;gap:8px;margin-top:4px}
+.chip{border:1px solid #d6cdc4;background:#fff;border-radius:999px;padding:6px 14px;cursor:pointer;font:inherit;color:var(--ink);transition:all .15s}
+.chip:hover{border-color:var(--maroon)}
+.chip[aria-pressed=true]{background:var(--maroon);border-color:var(--maroon);color:#fff}
+.row{display:grid;gap:14px;grid-template-columns:1fr 1fr}
+@media(max-width:700px){.row{grid-template-columns:1fr}}
+.btn{display:inline-flex;align-items:center;gap:8px;border:0;border-radius:10px;padding:10px 16px;font:600 14px inherit;cursor:pointer;background:linear-gradient(#9a2a51,#7a1f3d);color:#fff;transition:transform .12s,box-shadow .12s}
+.btn:hover{transform:translateY(-1px);box-shadow:0 6px 16px -8px rgba(63,13,32,.7)}
+.btn:active{transform:none}
+.btn.alt{background:#fff;color:var(--ink);border:1px solid #d6cdc4}
+.btn.alt:hover{border-color:var(--maroon);color:var(--maroon-d)}
+.btn.wa{background:#1fa855}
+.btn.sm{padding:6px 10px;font-size:13px}
+.bar{display:flex;flex-wrap:wrap;gap:10px;align-items:center;margin-top:14px}
+table{width:100%;border-collapse:collapse;font-size:14px}
+th,td{text-align:left;padding:9px 8px;border-bottom:1px solid var(--line);vertical-align:middle}
+th{font-size:12px;color:var(--muted);text-transform:uppercase;letter-spacing:.04em}
+td.link{max-width:340px;overflow-wrap:anywhere;color:var(--muted);font-size:12.5px}
+.acts{display:flex;gap:6px;flex-wrap:wrap}
+.badge{display:inline-block;background:#fdefd6;color:#5e1530;border-radius:999px;padding:2px 10px;font-size:12px;font-weight:600}
+.empty{color:var(--muted);text-align:center;padding:22px}
+.toast{position:fixed;left:50%;bottom:22px;transform:translateX(-50%);background:#2a0814;color:#fff;border-radius:999px;padding:9px 18px;font-size:14px;opacity:0;pointer-events:none;transition:opacity .2s}
+.toast.on{opacity:1}
+.help ol{margin:6px 0 0 18px;padding:0}
+.help li{margin:4px 0}
+</style>
+</head>
+<body>
+<header><div><h1>Invite generator</h1><p>[Demo] Religious Function: make a personal link and WhatsApp message for every guest.</p></div></header>
+<main>
+  <section class="card">
+    <h2>1. Where is the invitation hosted?</h2>
+    <label for="site">Site address</label>
+    <input id="site" type="text" inputmode="url" placeholder="https://your-invite.netlify.app" autocomplete="off">
+    <p class="hint">The address Netlify or GitHub Pages gives you after you upload the exported folder. Links in step 3 are built from it.</p>
+    <div id="langWrap" hidden>
+      <label>Invitation language for these guests</label>
+      <div class="chips" id="langs" role="group" aria-label="Invitation language"></div>
+    </div>
+  </section>
+
+  <section class="card">
+    <h2>2. Guests</h2>
+    <div class="row">
+      <div>
+        <label for="guests">One guest per line</label>
+        <textarea id="guests" placeholder="Priya Raman, 9876543210&#10;Mr. &amp; Mrs. Suresh&#10;Aunty Lakshmi, 9123456780"></textarea>
+        <p class="hint">Name, then an optional WhatsApp number after a comma. Paste straight from a spreadsheet too.</p>
+      </div>
+      <div>
+        <label for="msg">Message ({name} and {link} are filled in)</label>
+        <textarea id="msg"></textarea>
+        <label for="cc">Country code for numbers without one</label>
+        <input id="cc" type="text" inputmode="numeric" value="91" style="max-width:100px">
+      </div>
+    </div>
+    <div class="bar"><button class="btn" id="go" type="button">Generate links</button><button class="btn alt" id="clear" type="button">Clear</button><span class="badge" id="count" hidden></span></div>
+  </section>
+
+  <section class="card">
+    <h2>3. Personal links</h2>
+    <div id="out"><p class="empty">Your links will appear here.</p></div>
+    <div class="bar" id="bulk" hidden><button class="btn alt" id="copyAll" type="button">Copy all links</button><button class="btn alt" id="csv" type="button">Download CSV</button></div>
+  </section>
+
+  <section class="card help">
+    <h2>How to put the invitation online</h2>
+    <ol>
+      <li><b>Netlify:</b> open app.netlify.com/drop, drag the exported folder in. You get an address like <i>name.netlify.app</i>.</li>
+      <li><b>GitHub Pages:</b> create a repository, upload the folder's files, then Settings → Pages → deploy from the main branch.</li>
+      <li>Paste that address in step 1 and generate links. Each guest opens a page that greets them by name.</li>
+    </ol>
+  </section>
+</main>
+<div class="toast" id="toast" role="status"></div>
+<script>
+(function(){
+var CFG={"title":"[Demo] Religious Function","siteUrl":"https://deepaspects360.github.io/thoranam/demo-religious-function","defaultLang":"en","languages":[{"code":"en","name":"English"},{"code":"ta","name":"தமிழ்"},{"code":"hi","name":"हिन्दी"}]};
+var KEY="invite-generator:"+location.pathname.split("/").pop();
+var $=function(i){return document.getElementById(i)};
+var state={site:CFG.siteUrl||"",lang:CFG.defaultLang,guests:"",msg:"",cc:"91"};
+try{var s=JSON.parse(localStorage.getItem(KEY)||"null");if(s)for(var k in s)if(k in state&&s[k]!=null)state[k]=s[k]}catch(e){}
+var MSG={en:"Dear {name}, we warmly invite you to our celebration. Please open your personal invitation: {link}",ta:"அன்புள்ள {name}, எங்கள் நிகழ்வுக்கு உங்களை அன்புடன் அழைக்கிறோம். உங்கள் அழைப்பிதழ்: {link}",hi:"प्रिय {name}, हम आपको अपने समारोह में सादर आमंत्रित करते हैं। आपका निमंत्रण: {link}"};
+if(!state.msg)state.msg=MSG[state.lang]||MSG.en;
+function save(){try{localStorage.setItem(KEY,JSON.stringify(state))}catch(e){}}
+function toast(t){var e=$("toast");e.textContent=t;e.classList.add("on");clearTimeout(toast.t);toast.t=setTimeout(function(){e.classList.remove("on")},1800)}
+function copy(text){if(navigator.clipboard&&navigator.clipboard.writeText)return navigator.clipboard.writeText(text).then(function(){toast("Copied")},fallback);fallback();function fallback(){var a=document.createElement("textarea");a.value=text;document.body.appendChild(a);a.select();try{document.execCommand("copy");toast("Copied")}catch(e){toast("Copy failed")}a.remove()}}
+function base(){var s=(state.site||"").trim().replace(/\/+$/,"");if(s&&!/^https?:\/\//i.test(s))s="https://"+s;return s}
+function page(){return state.lang===CFG.defaultLang?"":state.lang+".html"}
+function parse(){return state.guests.split(/\r?\n/).map(function(l){return l.trim()}).filter(Boolean).map(function(l){var p=l.split(/[,\t;]/).map(function(x){return x.trim()});var name=p[0],ph=(p[1]||"").replace(/[^0-9]/g,"");if(ph&&ph.length<=10)ph=(state.cc||"").replace(/[^0-9]/g,"")+ph.replace(/^0+/,"");return{name:name,phone:ph}}).filter(function(g){return g.name})}
+function linkFor(n){var b=base();return b+"/"+page()+"?to="+encodeURIComponent(n.slice(0,60))}
+function waUrl(g,link){var t=state.msg.replace(/\{name\}/g,g.name).replace(/\{link\}/g,link);return "https://wa.me/"+(g.phone||"")+"?text="+encodeURIComponent(t)}
+var rows=[];
+function render(){
+  var b=base();
+  if(!b){$("out").innerHTML='<p class="empty">Enter the site address in step 1 first.</p>';$("bulk").hidden=true;$("count").hidden=true;return}
+  var gs=parse();rows=gs.map(function(g){var l=linkFor(g.name);return{g:g,link:l,wa:waUrl(g,l)}});
+  $("count").textContent=rows.length+" guest"+(rows.length===1?"":"s");$("count").hidden=!rows.length;$("bulk").hidden=!rows.length;
+  if(!rows.length){$("out").innerHTML='<p class="empty">Add guests in step 2, then press Generate.</p>';return}
+  var t=document.createElement("table");t.innerHTML="<thead><tr><th>Guest</th><th>Link</th><th></th></tr></thead>";var tb=document.createElement("tbody");
+  rows.forEach(function(r,i){var tr=document.createElement("tr");
+    var a=document.createElement("td");a.textContent=r.g.name;if(r.g.phone){var sm=document.createElement("div");sm.className="hint";sm.textContent="+"+r.g.phone;a.appendChild(sm)}
+    var l=document.createElement("td");l.className="link";l.textContent=r.link;
+    var c=document.createElement("td");var d=document.createElement("div");d.className="acts";
+    var b1=document.createElement("button");b1.className="btn alt sm";b1.type="button";b1.textContent="Copy link";b1.onclick=function(){copy(r.link)};
+    var b2=document.createElement("a");b2.className="btn wa sm";b2.target="_blank";b2.rel="noopener";b2.href=r.wa;b2.textContent="WhatsApp";
+    d.append(b1,b2);c.appendChild(d);tr.append(a,l,c);tb.appendChild(tr)});
+  t.appendChild(tb);$("out").replaceChildren(t);
+}
+function csvCell(v){v=String(v);return /[",\n]/.test(v)?'"'+v.replace(/"/g,'""')+'"':v}
+$("site").value=state.site;$("guests").value=state.guests;$("msg").value=state.msg;$("cc").value=state.cc;
+if(CFG.languages.length>1){$("langWrap").hidden=false;CFG.languages.forEach(function(L){var b=document.createElement("button");b.type="button";b.className="chip";b.textContent=L.name;b.lang=L.code;b.setAttribute("aria-pressed",String(L.code===state.lang));b.onclick=function(){state.lang=L.code;if(Object.keys(MSG).indexOf(L.code)>=0&&(!state.msg||Object.keys(MSG).some(function(k){return MSG[k]===state.msg})))state.msg=MSG[L.code]||MSG.en;$("msg").value=state.msg;[].forEach.call($("langs").children,function(c){c.setAttribute("aria-pressed",String(c.lang===state.lang))});save();render()};$("langs").appendChild(b)})}
+["site","guests","msg","cc"].forEach(function(id){$(id).addEventListener("input",function(){state[id]=$(id).value;save()})});
+$("go").onclick=function(){state.site=$("site").value;save();render();if(rows.length)toast(rows.length+" links ready")};
+$("clear").onclick=function(){state.guests="";$("guests").value="";save();render()};
+$("copyAll").onclick=function(){copy(rows.map(function(r){return r.g.name+": "+r.link}).join("\n"))};
+$("csv").onclick=function(){var out=["Name,Phone,Link,WhatsApp"].concat(rows.map(function(r){return [r.g.name,r.g.phone,r.link,r.wa].map(csvCell).join(",")})).join("\r\n");var a=document.createElement("a");a.href=URL.createObjectURL(new Blob(["\ufeff"+out],{type:"text/csv"}));a.download="guest-links.csv";document.body.appendChild(a);a.click();a.remove()};
+render();
+})();
+</script>
+</body>
+</html>
